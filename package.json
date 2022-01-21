@@ -4,7 +4,8 @@
   "description": "Mern e-commerece web app",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js"
+    "start": "node index.js",
+    "dev": "nodemon index.js"
   },
   "keywords": [
     "chat",

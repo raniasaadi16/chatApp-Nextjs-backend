@@ -51,6 +51,8 @@ const io = socket(server, { cors:
   }
 })
 let users = []
+//let rooms = []
+
 const addUser =  (userId, socketId) => {
   !users.some(user => user.userId === userId) && users.push({userId, socketId})
 }
@@ -62,21 +64,36 @@ const removeUser = (socketId) => {
 // }
 io.on('connection', socket => {
     console.log(socket.id)
-
-    // Add user 
-    socket.on('addUser', userId => {
-      console.log('userid :', userId)
+    
+    socket.on('onlineUser', userId => {
       addUser(userId, socket.id)
-      // Send users
-      io.emit('getUsers', users) // send only users of room
+      io.emit('getUsers', users)
     })
+
+
+    // Join room
+    socket.on('join-room', (roomId) => {
+      socket.join(roomId)
+    })
+    
+    //Leave Room
+    socket.on('leave-room', (roomId) => {
+      socket.leave(roomId)
+    })
+    
 
     // Get message
     socket.on('sendMessage', ({sender, roomId, content}) => {
      // const user = getUser(senderId)
 
       //Send it to users
-      socket.broadcast.emit('getMessage', { sender, content })
+      socket.to(roomId).emit('getMessage', { sender, content })
+    })
+
+    // If a new user joined the room
+    socket.on('addUserToRoom', (room, roomId)=> {
+      // Send the new room members
+      socket.to(roomId).emit('getUpdatedRoom', room)
     })
 
     //disconnect
@@ -86,3 +103,13 @@ io.on('connection', socket => {
         io.emit('getUsers', users)
     })
 })
+
+
+
+// Add user 
+    // socket.on('addUser', userId => {
+    //   console.log('userid :', userId)
+    //   addUser(userId, socket.id)
+    //   // Send users
+    //   io.emit('getUsers', users) // send only users of room
+    // })

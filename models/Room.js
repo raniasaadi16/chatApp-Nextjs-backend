@@ -11,6 +11,11 @@ var roomschema = new mongoose.Schema({
         type:String,
         required:true,
     },
+    shortName: {
+        type: String,
+        required: true,
+        unique: true
+    },
     members: [
         {
             type: mongoose.Schema.ObjectId,

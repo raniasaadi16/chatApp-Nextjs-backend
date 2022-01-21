@@ -56,18 +56,15 @@ exports.login = catchAsync(async (req,res,next)=>{
     const cookieOption = {
         expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRES_IN*24*60*60*1000),
         httpOnly: true,
-        secure : true,
-        sameSite: 'none'
+       // secure : true,
     };
     //if(req.secure || req.headers('x-forwarded-proto')=== 'https') cookieOption.secure = true;
 
     res.cookie('jwt', token, cookieOption);
-    console.log(req.cookies, 'login')
     res.status(200).json({
         status: 'success',
         data: {
-            user,
-            token
+            user
         }
     })
 
@@ -80,7 +77,6 @@ exports.logout = catchAsync(async (req,res,next)=>{
         expires: new Date(Date.now() + 10*1000),
         httpOnly: true,
        // secure : true,
-       // sameSite: 'none'
     };
     //if(req.secure || req.headers('x-forwarded-proto')=== 'https') cookieOption.secure = true;
     res.cookie('jwt', 'logout', cookieOption);
@@ -97,7 +93,6 @@ exports.signup = catchAsync(async (req,res,next)=>{
         expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRES_IN*24*60*60*1000),
         httpOnly: true,
         secure : true,
-        sameSite: 'none',
     };
     //if(req.secure || req.headers('x-forwarded-proto')=== 'https') cookieOption.secure = true;
 
@@ -189,7 +184,7 @@ exports.updatePass = catchAsync(async (req,res,next)=>{
     const cookieOption = {
         expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRES_IN*24*60*60*1000),
         httpOnly: true,
-        //secure : true
+        secure : true
     };
     //if(req.secure || req.headers('x-forwarded-proto')=== 'https') cookieOption.secure = true;
     res.cookie('jwt', token, cookieOption);
@@ -202,20 +197,9 @@ exports.updatePass = catchAsync(async (req,res,next)=>{
         }
     })
 });
-//*******************IS LOGGEDIN*****************/
+//*******************IS LOGGEDIN Token*****************/
 exports.isLoggedinToken = async (req,res,next)=>{
-    console.log('from nextjs : ',req.params)
     if (req.params.test) {
-        const cookieOption = {
-            expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRES_IN*24*60*60*1000),
-            httpOnly: true,
-            secure : true,
-            sameSite: 'none'
-        };
-    
-        res.cookie('jwt', req.params.test, cookieOption);
-        console.log('from nodejs : ',req.cookies)
-
         try {
             // 1) verify token
             let decoded;
@@ -247,7 +231,6 @@ exports.isLoggedinToken = async (req,res,next)=>{
 
 //*******************IS LOGGEDIN*****************/
 exports.isLoggedin = async (req,res,next)=>{
-   // console.log(req.cookies)
     if (req.cookies.jwt) {
         try {
             // 1) verify token
