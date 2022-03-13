@@ -3,6 +3,12 @@ const catchAsync = require('../utils/catchAsync');
 const appError = require('../utils/appError');
 const jwt = require('jsonwebtoken');
 const cloudinary = require('../utils/cloudinary');
+const { OAuth2Client } = require('google-auth-library')
+const dotenv = require('dotenv')
+const fetch = require('node-fetch')
+dotenv.config({path: '.env'});
+
+const client = new OAuth2Client(process.env.GOOGLE_AUTH_API)
 
 //*******************PROTECT*****************/
 exports.protect = catchAsync(async (req,res,next)=>{
@@ -46,8 +52,11 @@ exports.login = catchAsync(async (req,res,next)=>{
     if(!email || !password) return next(new appError('you must enter all fields', 400));
 
     const user = await User.findOne({email}).select('+password');
-    // CHECK IF USER HAD SIGNUP WITH OAUTH METHOD
     // CHECK IF USER EXIST
+    if(!user) return next(new appError('email or password wrong', 400));
+    // CHECK IF USER HAD SIGNUP WITH OAUTH METHOD
+    if(user.authMethod.oAuth && !await user.checkPassword(user.password, password)) return next(new appError(`Please try to login with ${user.authMethod.methodeType}`, 400));
+    // CHECK IF USER'S PASSWORD
     if(!user || !await user.checkPassword(user.password, password)) return next(new appError('email or password wrong', 400));
     // REGISTER THE TIME OF LOGIN
     await User.findByIdAndUpdate(user.id,{lastTimeLogedin: Date.now()});
@@ -56,7 +65,7 @@ exports.login = catchAsync(async (req,res,next)=>{
     const cookieOption = {
         expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRES_IN*24*60*60*1000),
         httpOnly: true,
-       // secure : true,
+        secure : true,
     };
     //if(req.secure || req.headers('x-forwarded-proto')=== 'https') cookieOption.secure = true;
 
@@ -69,8 +78,83 @@ exports.login = catchAsync(async (req,res,next)=>{
     })
 
 });
-//****************LOGIN WITH GOOLE***********/
-exports.googleLogin = catchAsync(async (req, res, next)=> {})
+//****************LOGIN WITH GOOGLE***********/
+exports.googleLogin = catchAsync(async (req, res, next)=> {
+    const { tokenId} = req.body
+    let user
+    const response = await client.verifyIdToken({idToken : tokenId, audience: process.env.GOOGLE_AUTH_API})
+    const { email, given_name, family_name, picture, email_verified } = response.payload
+
+    if(!email_verified) return next(new appError('Somehing went very wrong .....!',400))
+    user = await User.findOne({email})
+    if(user){
+        if(!user.authMethod.oAuth) return next(new appError('this email doesnt use a google authentication, please try to login with email and password',400))
+        if(user.authMethod.methodeType !== 'Google') return next(new appError(`please try to login with ${user.authMethod.methodeType}`,400))
+        // REGISTER THE TIME OF LOGIN
+        await User.findByIdAndUpdate(user.id,{lastTimeLogedin: Date.now()});
+    }else{
+        if(email_verified){
+            user = await User.create({
+                firstName : given_name, lastName: family_name, password: process.env.JWT_SECRET + Date.now(),passwordConfirm : process.env.JWT_SECRET + Date.now(),email ,picture, authMethod: {oAuth: true, methodeType: 'Google'}
+            });
+        }
+    }
+
+    const token = jwt.sign({id: user.id}, process.env.JWT_SECRET);
+    const cookieOption = {
+        expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRES_IN*24*60*60*1000),
+        httpOnly: true,
+        secure : true,
+    };
+    //if(req.secure || req.headers('x-forwarded-proto')=== 'https') cookieOption.secure = true;
+
+    res.cookie('jwt', token, cookieOption);
+    res.status(200).json({
+        status: 'success',
+        data: {
+            user
+        }
+    })
+})
+//****************LOGIN WITH FACEBOOK***********/
+exports.facebookLogin = catchAsync(async (req, res, next)=> {
+    const { accessToken, userID} = req.body
+    let user
+    const response = await fetch(`https://graph.facebook.com/v2.11/${userID}?fields=email,first_name,last_name,picture&access_token=${accessToken}`, {
+        method: 'GET'
+    })
+    const data = await response.json()
+    user = await User.findOne({email : data.email})
+    if(user){
+        if(!user.authMethod.oAuth) return next(new appError('this email doesnt use a facebook authentication, please try to login with email and password',400))
+        if(user.authMethod.methodeType !== 'Facebook') return next(new appError(`please try to login with ${user.authMethod.methodeType}`,400))
+        // REGISTER THE TIME OF LOGIN
+        await User.findByIdAndUpdate(user.id,{lastTimeLogedin: Date.now()});
+    }else{
+        if(response.ok){
+            const { first_name, last_name, email, picture } = data
+            user = await User.create({
+                firstName : first_name, lastName: last_name, password: process.env.JWT_SECRET + Date.now(),passwordConfirm : process.env.JWT_SECRET + Date.now(),email ,picture: picture.data.url, authMethod: {oAuth: true, methodeType: 'Facebook'}
+            });
+        }
+    }
+
+    const token = jwt.sign({id: user.id}, process.env.JWT_SECRET);
+    const cookieOption = {
+        expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRES_IN*24*60*60*1000),
+        httpOnly: true,
+        secure : true,
+    };
+  //  if(req.secure || req.headers('x-forwarded-proto')=== 'https') cookieOption.secure = true;
+
+    res.cookie('jwt', token, cookieOption);
+    res.status(200).json({
+        status: 'success',
+        data: {
+            user
+        }
+    })
+})
 //*******************LOGOUT*****************/
 exports.logout = catchAsync(async (req,res,next)=>{
     const cookieOption = {
@@ -167,13 +251,20 @@ exports.updateMe = catchAsync(async (req,res,next)=>{
         }
     })
 });
+                   
+const checkOauthCreatePassword = (user) => {
+    return (user.authMethod.oAuth && !user.passwordChangedAt)
+}
 //*******************UPDATE PASSWORD*****************/
 exports.updatePass = catchAsync(async (req,res,next)=>{
     const {currentPass, password, passwordConfirm} = req.body;
-    if(!currentPass || !password || !passwordConfirm) return next(new appError('missed field!',400))
+    if(!password || !passwordConfirm) return next(new appError('missed field!',400))
     const user = await User.findById(req.user.id).select('+password');
+    if(!currentPass && !checkOauthCreatePassword(user)) return next(new appError('missed field!',400))
     // CHECK IF CURRENT PASSWORD FIELD VALUE IS CORRECT
-    if(!await user.checkPassword(user.password, currentPass)) return next(new appError('wrong current password !',400));
+    if(!checkOauthCreatePassword(user)){
+        if(!await user.checkPassword(user.password, currentPass)) return next(new appError('wrong current password !',400));
+    }
 
     // UPDATE PASSWORD
     user.password = password;

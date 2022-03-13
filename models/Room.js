@@ -4,8 +4,8 @@ const mongoose = require('mongoose');
 var roomschema = new mongoose.Schema({
     name:{
         type:String,
-        required:true,
-        unique:true,
+        required:[true, 'name is required'],
+        unique:[true, 'this room already exist !'],
     },
     description:{
         type:String,

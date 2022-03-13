@@ -4,6 +4,8 @@ const router = express.Router();
 const upload = require('../utils/uploadPhotos')
 
 router.route('/login').post(authController.login); 
+router.route('/login/g').post(authController.googleLogin); 
+router.route('/login/fb').post(authController.facebookLogin); 
 router.get('/logout', authController.logout);
 router.route('/signup').post(authController.signup);
 router.get('/getMe',authController.protect, authController.getMe);

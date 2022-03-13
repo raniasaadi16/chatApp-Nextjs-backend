@@ -4,7 +4,6 @@ const appError = require('../utils/appError')
 
 exports.getAllRooms = catchAsync(async (req, res, next) =>{
     const rooms = await Room.find();
-    console.log(req.cookies)
     res.status(200).json({
         status: 'success',
         data: {
@@ -15,10 +14,10 @@ exports.getAllRooms = catchAsync(async (req, res, next) =>{
 })
 
 exports.createRoom = catchAsync(async (req, res, next) =>{
-    const { name, description } = req.body;
-    if(!name || !description) return next(new appError('missed fields !', 400))
+    const { name, description, shortName } = req.body;
+    if(!name || !description || !shortName) return next(new appError('missed fields !', 400))
 
-    const room = await Room.create({name , members: [req.user._id], description})
+    const room = await Room.create({name , description, shortName, members: [req.user._id], description})
 
     res.status(201).json({
         status: 'success',
