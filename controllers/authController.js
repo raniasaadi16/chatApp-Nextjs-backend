@@ -160,7 +160,7 @@ exports.logout = catchAsync(async (req,res,next)=>{
     const cookieOption = {
         expires: new Date(Date.now() + 10*1000),
         httpOnly: true,
-       // secure : true,
+        secure : true,
     };
     //if(req.secure || req.headers('x-forwarded-proto')=== 'https') cookieOption.secure = true;
     res.cookie('jwt', 'logout', cookieOption);
