@@ -328,6 +328,7 @@ exports.isLoggedinToken = async (req,res,next)=>{
 
 //*******************IS LOGGEDIN*****************/
 exports.isLoggedin = async (req,res,next)=>{
+    console.log(req.cookies)
     if (req.cookies.jwt) {
         try {
             // 1) verify token
