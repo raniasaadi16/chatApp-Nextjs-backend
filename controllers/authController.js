@@ -67,7 +67,7 @@ exports.login = catchAsync(async (req,res,next)=>{
         httpOnly: true,
         secure : true,
         domain: 'localhost',
-        sameSite: 'None'
+        //sameSite: 'None'
     };
     //if(req.secure || req.headers('x-forwarded-proto')=== 'https') cookieOption.secure = true;
 
@@ -108,7 +108,7 @@ exports.googleLogin = catchAsync(async (req, res, next)=> {
         httpOnly: true,
         secure : true,
         domain: 'localhost',
-        sameSite: 'None'
+        //sameSite: 'None'
     };
     //if(req.secure || req.headers('x-forwarded-proto')=== 'https') cookieOption.secure = true;
 
@@ -166,7 +166,7 @@ exports.logout = catchAsync(async (req,res,next)=>{
         httpOnly: true,
         secure : true,
         domain: 'localhost',
-        sameSite: 'None'
+        //sameSite: 'None'
     };
     //if(req.secure || req.headers('x-forwarded-proto')=== 'https') cookieOption.secure = true;
     res.cookie('jwt', 'logout', cookieOption);
