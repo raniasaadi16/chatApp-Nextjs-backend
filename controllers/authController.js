@@ -65,11 +65,11 @@ exports.login = catchAsync(async (req,res,next)=>{
     const cookieOption = {
         expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRES_IN*24*60*60*1000),
         httpOnly: true,
-        secure : true,
-        //domain: '.localhost',
+        //secure : true,
+        domain: '.localhost',
         SameSite: 'None'
     };
-    //if(req.secure || req.headers('x-forwarded-proto')=== 'https') cookieOption.secure = true;
+    if(req.secure || req.headers('x-forwarded-proto')=== 'https') cookieOption.secure = true;
 
     res.cookie('jwt', token, cookieOption);
     res.status(200).json({
@@ -106,11 +106,11 @@ exports.googleLogin = catchAsync(async (req, res, next)=> {
     const cookieOption = {
         expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRES_IN*24*60*60*1000),
         httpOnly: true,
-        secure : true,
+        //secure : true,
         domain: '.localhost',
         SameSite: 'None'
     };
-    //if(req.secure || req.headers('x-forwarded-proto')=== 'https') cookieOption.secure = true;
+    if(req.secure || req.headers('x-forwarded-proto')=== 'https') cookieOption.secure = true;
 
     res.cookie('jwt', token, cookieOption);
     res.status(200).json({
@@ -147,11 +147,11 @@ exports.facebookLogin = catchAsync(async (req, res, next)=> {
     const cookieOption = {
         expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRES_IN*24*60*60*1000),
         httpOnly: true,
-        secure : true,
+        //secure : true,
         SameSite: 'None',
         domain: '.localhost'
     };
-  //  if(req.secure || req.headers('x-forwarded-proto')=== 'https') cookieOption.secure = true;
+    if(req.secure || req.headers('x-forwarded-proto')=== 'https') cookieOption.secure = true;
 
     res.cookie('jwt', token, cookieOption);
     res.status(200).json({
@@ -166,11 +166,11 @@ exports.logout = catchAsync(async (req,res,next)=>{
     const cookieOption = {
         expires: new Date(Date.now() + 10*1000),
         httpOnly: true,
-        secure : true,
+        //secure : true,
         domain: '.localhost',
         SameSite: 'None'
     };
-    //if(req.secure || req.headers('x-forwarded-proto')=== 'https') cookieOption.secure = true;
+    if(req.secure || req.headers('x-forwarded-proto')=== 'https') cookieOption.secure = true;
     res.cookie('jwt', 'logout', cookieOption);
     res.status(200).json({status: 'success', data: {}})
 })  
@@ -184,11 +184,11 @@ exports.signup = catchAsync(async (req,res,next)=>{
     const cookieOption = {
         expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRES_IN*24*60*60*1000),
         httpOnly: true,
-        secure : true,
+        //secure : true,
         domain: '.localhost',
         SameSite: 'None'
     };
-    //if(req.secure || req.headers('x-forwarded-proto')=== 'https') cookieOption.secure = true;
+    if(req.secure || req.headers('x-forwarded-proto')=== 'https') cookieOption.secure = true;
 
     res.cookie('jwt', token, cookieOption);
     res.status(201).json({
@@ -285,11 +285,11 @@ exports.updatePass = catchAsync(async (req,res,next)=>{
     const cookieOption = {
         expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRES_IN*24*60*60*1000),
         httpOnly: true,
-        secure : true,
+    //    secure : true,
         domain: '.localhost',
         SameSite: 'None'
     };
-    //if(req.secure || req.headers('x-forwarded-proto')=== 'https') cookieOption.secure = true;
+    if(req.secure || req.headers('x-forwarded-proto')=== 'https') cookieOption.secure = true;
     res.cookie('jwt', token, cookieOption);
 
     res.status(200).json({
