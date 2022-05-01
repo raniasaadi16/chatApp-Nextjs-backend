@@ -15,6 +15,7 @@ const xss = require('xss-clean');
 const hpp = require('hpp');
 const compression = require('compression');
 
+app.use(cookieParser());
 app.enable('trust proxy')
 app.set('trust proxy', 1)
 app.use(cors({
@@ -23,7 +24,7 @@ app.use(cors({
 }))
 //app.options('*', cors())
 app.use(function (req, res, next) {
-  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
+  res.setHeader('Access-Control-Allow-Origin', 'https://chat-app-nextjs-frontend.vercel.app');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type', 'X-HTTP-Method-Override', 'X-Requested-With');
   res.setHeader('Access-Control-Allow-Credentials', true);
@@ -36,7 +37,6 @@ mongoose.connect(process.env.MONGO_URL ,
 }).then(console.log('DB connected ....')).catch(err=> console.log(err));
 
 app.use(express.json({limit: '50mb'}));
-app.use(cookieParser());
 
 // Set security HTTP headers
 app.use(helmet());
