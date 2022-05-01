@@ -41,11 +41,7 @@ exports.protect = catchAsync(async (req,res,next)=>{
     next();
 
 });
-//*******************ADMIN ACTION*****************/
-exports.adminAction = (req,res,next) => {
-    if(req.user.role !== 'admin') return next(new appError('you are not authorizate to do that !',401));
-    next();
-};
+
 //*******************LOGIN*****************/
 exports.login = catchAsync(async (req,res,next)=>{
     const {email, password} = req.body;
@@ -68,7 +64,7 @@ exports.login = catchAsync(async (req,res,next)=>{
         //secure : true,
         SameSite: 'None'
     };
-    if(req.secure || req.headers('x-forwarded-proto')=== 'https') cookieOption.secure = true;
+   // if(req.secure || req.headers('x-forwarded-proto')=== 'https') cookieOption.secure = true;
 
     res.cookie('jwt', token, cookieOption);
     res.status(200).json({
@@ -255,7 +251,7 @@ exports.updateMe = catchAsync(async (req,res,next)=>{
         }
     })
 });
-                   
+                  
 const checkOauthCreatePassword = (user) => {
     return (user.authMethod.oAuth && !user.passwordChangedAt)
 }
