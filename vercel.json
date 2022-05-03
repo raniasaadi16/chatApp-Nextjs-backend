@@ -11,6 +11,7 @@
             "dest": "index.js",
             "headers": { "cache-control": "no-cache, no-store, must-revalidate", "Access-Control-Allow-Origin": "https://chat-app-nextjs-frontend.vercel.app",
             "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, PATCH",
+            "Access-Control-Allow-Headers": "Content-Type, X-HTTP-Method-Override, X-Requested-With",
             "Access-Control-Allow-Credentials": "true" }
         }
     ]
