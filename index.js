@@ -76,6 +76,7 @@ process.on('SIGTERM', () => {
     console.log('Process terminated')
   })
 })
+server.timeout = 120000;
 
 const io = socket(server, { cors:
   {    
