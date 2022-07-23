@@ -291,6 +291,7 @@ exports.updatePass = catchAsync(async (req,res,next)=>{
 });
 //*******************IS LOGGEDIN Token*****************/
 exports.isLoggedinToken = async (req,res,next)=>{
+    console.log(req.cookies)
     if (req.params.test) {
         try {
             // 1) verify token
