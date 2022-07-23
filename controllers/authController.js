@@ -63,7 +63,7 @@ exports.login = catchAsync(async (req,res,next)=>{
         httpOnly: true,
         secure : true,
         sameSite: 'none',
-        domain: 'chat-app-rania.herokuapp.com'
+        domain: '.herokuapp.com'
     };
    // if(req.secure || req.headers('x-forwarded-proto')=== 'https') cookieOption.secure = true;
 
