@@ -16,10 +16,10 @@ const hpp = require('hpp');
 const compression = require('compression');
 
 app.use(cookieParser());
-app.enable('trust proxy')
-app.set('trust proxy', 1)
+// app.enable('trust proxy')
+// app.set('trust proxy', 1)
 app.use(cors({
-  origin: ['http://localhost:3000', 'http://127.0.0.1:3000', 'https://chat-app-frontendnext.herokuapp.com'],
+  origin: 'https://chat-app-frontendnext.herokuapp.com',
   credentials: true
 }))
 //app.options('*', cors())
