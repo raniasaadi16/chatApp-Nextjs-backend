@@ -60,10 +60,10 @@ exports.login = catchAsync(async (req,res,next)=>{
     const token = jwt.sign({id: user.id}, process.env.JWT_SECRET);
     const cookieOption = {
         expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRES_IN*24*60*60*1000),
-        // httpOnly: true,
-        // secure : true,
-        sameSite: 'lax',
-        domain: 'chat-app-rania.herokuapp.com'
+        httpOnly: true,
+        secure : true,
+        sameSite: 'none',
+        domain: 'herokuapp.com'
     };
    // if(req.secure || req.headers('x-forwarded-proto')=== 'https') cookieOption.secure = true;
 
