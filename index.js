@@ -83,6 +83,13 @@ const io = socket(server, { cors:
   }
 })
 
+// FOR PRODUCTION
+// if(process.env.NODE_ENV){
+//   app.use(express.static('build'))
+//   app.get('*', (req, res)=> {
+//     req.sendFile(path.resolve(__dirname, 'build', 'index.html'))
+//   })
+// }
 
 let users = []
 

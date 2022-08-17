@@ -63,7 +63,7 @@ exports.login = catchAsync(async (req,res,next)=>{
         httpOnly: true,
         secure : true,
         sameSite: 'none',
-        domain: '.herokuapp.com'
+        // domain: '.herokuapp.com'
     };
    // if(req.secure || req.headers('x-forwarded-proto')=== 'https') cookieOption.secure = true;
 
@@ -162,7 +162,7 @@ exports.logout = catchAsync(async (req,res,next)=>{
         //secure : true,
         SameSite: 'None'
     };
-    if(req.secure || req.headers('x-forwarded-proto')=== 'https') cookieOption.secure = true;
+    // if(req.secure || req.headers('x-forwarded-proto')=== 'https') cookieOption.secure = true;
     res.cookie('jwt', 'logout', cookieOption);
     res.status(200).json({status: 'success', data: {}})
 })  
