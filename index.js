@@ -19,12 +19,12 @@ app.use(cookieParser());
 app.enable('trust proxy')
 app.set('trust proxy', 1)
 app.use(cors({
-  origin: 'https://chat-app-frontendnext.herokuapp.com',
+  origin: process.env.ORIGIN_CROSS,
   credentials: true
 }))
 //app.options('*', cors())
 app.use(function (req, res, next) {
-  res.setHeader('Access-Control-Allow-Origin', 'https://chat-app-frontendnext.herokuapp.com');
+  res.setHeader('Access-Control-Allow-Origin', process.env.ORIGIN_CROSS);
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type', 'X-HTTP-Method-Override', 'X-Requested-With');
   res.setHeader('Access-Control-Allow-Credentials', true);
