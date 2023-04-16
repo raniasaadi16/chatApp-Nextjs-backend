@@ -18,6 +18,10 @@ exports.protect = catchAsync(async (req,res,next)=>{
     }else if(req.cookies.jwt) {
         token = req.cookies.jwt
     };
+
+    console.log('**************************token******************', req.cookie)
+    console.log('**************************token******************', req.cookies)
+
     // CHECK IF TOKEN EXIST
     if(!token) return next(new appError('you must loggin',401));
     // CHECK IF TOKEN IS CORRECT
@@ -62,7 +66,7 @@ exports.login = catchAsync(async (req,res,next)=>{
         expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRES_IN*24*60*60*1000),
         httpOnly: true,
         // secure : true,
-        sameSite: 'none',
+        // sameSite: 'none',
         // domain: '.herokuapp.com'
     };
    // if(req.secure || req.headers('x-forwarded-proto')=== 'https') cookieOption.secure = true;
