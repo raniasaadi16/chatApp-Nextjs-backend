@@ -23,6 +23,8 @@ exports.protect = catchAsync(async (req,res,next)=>{
 
     console.log('**************************token******************', req.headers.cookie)
     console.log('**************************token******************', req.cookies)
+    console.log('**************************token log******************', token)
+
 
     // CHECK IF TOKEN EXIST
     if(!token) return next(new appError('you must loggin',401));
