@@ -64,15 +64,15 @@ exports.login = catchAsync(async (req,res,next)=>{
     const token = jwt.sign({id: user.id}, process.env.JWT_SECRET);
     const cookieOption = {
         expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRES_IN*24*60*60*1000),
-        httpOnly: false,
+        httpOnly: true,
         secure : true,
         sameSite: 'none',
-        // domain: '.herokuapp.com'
+        domain: '.raniadev.com'
     };
    // if(req.secure || req.headers('x-forwarded-proto')=== 'https') cookieOption.secure = true;
 
-    // res.cookie('jwt', token, cookieOption);
-    res.setHeader('jwt', token)
+    res.cookie('jwt', token, cookieOption);
+    // res.setHeader('jwt', token)
     res.status(200).json({
         status: 'success',
         data: {
