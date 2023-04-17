@@ -71,7 +71,8 @@ exports.login = catchAsync(async (req,res,next)=>{
     };
    // if(req.secure || req.headers('x-forwarded-proto')=== 'https') cookieOption.secure = true;
 
-    res.cookie('jwt', token, cookieOption);
+    // res.cookie('jwt', token, cookieOption);
+    res.setHeader('jwt', token)
     res.status(200).json({
         status: 'success',
         data: {
