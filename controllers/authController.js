@@ -19,7 +19,7 @@ exports.protect = catchAsync(async (req,res,next)=>{
         token = req.headers.cookie
     };
 
-    console.log('**************************token******************', req.headers,cookie)
+    console.log('**************************token******************', req.headers.cookie)
     console.log('**************************token******************', req.cookies)
 
     // CHECK IF TOKEN EXIST
