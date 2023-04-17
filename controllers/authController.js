@@ -330,12 +330,11 @@ exports.isLoggedinToken = async (req,res,next)=>{
 
 //*******************IS LOGGEDIN*****************/
 exports.isLoggedin = async (req,res,next)=>{
-    console.log(req.cookies)
-    if (req.cookies.jwt) {
+    if (req.headers.cookie) {
         try {
             // 1) verify token
             let decoded;
-            jwt.verify(req.cookies.jwt, process.env.JWT_SECRET,(err,user)=>{
+            jwt.verify(req.headers.cookie, process.env.JWT_SECRET,(err,user)=>{
                 if(err) return next();
                 decoded = user
             });
